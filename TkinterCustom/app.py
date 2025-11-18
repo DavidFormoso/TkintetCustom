@@ -6,7 +6,7 @@ if __name__ == "__main__":
     ctk.set_default_color_theme("blue")
 
     app = ctk.CTk()
-    app.title("Registro de Usuarios (CTk + MVC) - Fase 2")
+    app.title("Registro de Usuarios (CTk + MVC) - Fase 5")
     app.geometry("900x600")
 
     controller = AppController(app)

@@ -116,10 +116,18 @@ class MainView:
 
         self.frame_estado = ctk.CTkFrame(self.master, fg_color="transparent")
         self.frame_estado.grid(row=2, column=0, sticky="ew", padx=10, pady=(0, 5))
-        self.frame_estado.grid_columnconfigure(0, weight=1)
+        self.frame_estado.grid_columnconfigure(0, weight=0)
+        self.frame_estado.grid_columnconfigure(1, weight=1)
+
+        self.boton_autoguardar = ctk.CTkButton(
+            self.frame_estado,
+            text="Auto-guardar (10s): OFF",
+            width=180
+        )
+        self.boton_autoguardar.grid(row=0, column=0, padx=(0, 10), pady=3, sticky="w")
 
         self.label_estado = ctk.CTkLabel(self.frame_estado, text="Usuarios visibles: 0/0")
-        self.label_estado.grid(row=0, column=0, pady=3, sticky="n")
+        self.label_estado.grid(row=0, column=1, pady=3, sticky="n")
 
         self._avatar_image = None
 
@@ -142,6 +150,15 @@ class MainView:
     def configurar_callbacks_filtro(self, callback):
         self.var_busqueda.trace_add("write", lambda *args: callback())
         self.filtro_genero_menu.configure(command=lambda _: callback())
+
+    def configurar_callback_autoguardar(self, callback):
+        self.boton_autoguardar.configure(command=callback)
+
+    def set_estado_autoguardar(self, activo):
+        if activo:
+            self.boton_autoguardar.configure(text="Auto-guardar (10s): ON")
+        else:
+            self.boton_autoguardar.configure(text="Auto-guardar (10s): OFF")
 
     def actualizar_lista_usuarios(self, usuarios, on_seleccionar, on_editar):
         for widget in self.frame_lista.winfo_children():
@@ -232,10 +249,10 @@ class AddUserView:
         self.label_avatar.grid(row=row, column=0, pady=(15, 0), padx=25, sticky="w")
         row += 1
 
-        self.var_avatar = ctk.StringVar(value="mujer1.png")
+        self.var_avatar = ctk.StringVar(value="mujer 1.png")
 
         self.radio_avatar1 = ctk.CTkRadioButton(
-            self.window, text="Mujer 1", variable=self.var_avatar, value="mujer1.png"
+            self.window, text="Mujer 1", variable=self.var_avatar, value="mujer 1.png"
         )
         self.radio_avatar1.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
@@ -247,7 +264,7 @@ class AddUserView:
         row += 1
 
         self.radio_avatar3 = ctk.CTkRadioButton(
-            self.window, text="Mujer 2", variable=self.var_avatar, value="mujer2.png"
+            self.window, text="Mujer 2", variable=self.var_avatar, value="mujer 2.png"
         )
         self.radio_avatar3.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
@@ -329,10 +346,10 @@ class EditUserView:
         self.label_avatar.grid(row=row, column=0, pady=(15, 0), padx=25, sticky="w")
         row += 1
 
-        self.var_avatar = ctk.StringVar(value=usuario.avatar or "mujer1.png")
+        self.var_avatar = ctk.StringVar(value=usuario.avatar or "mujer 1.png")
 
         self.radio_avatar1 = ctk.CTkRadioButton(
-            self.window, text="Mujer 1", variable=self.var_avatar, value="mujer1.png"
+            self.window, text="Mujer 1", variable=self.var_avatar, value="mujer 1.png"
         )
         self.radio_avatar1.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
@@ -344,7 +361,7 @@ class EditUserView:
         row += 1
 
         self.radio_avatar3 = ctk.CTkRadioButton(
-            self.window, text="Mujer 2", variable=self.var_avatar, value="mujer2.png"
+            self.window, text="Mujer 2", variable=self.var_avatar, value="mujer 2.png"
         )
         self.radio_avatar3.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
