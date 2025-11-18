@@ -1,8 +1,17 @@
 import customtkinter as ctk
+import tkinter as tk
+
 
 class MainView:
     def __init__(self, master):
         self.master = master
+
+        self.menubar = tk.Menu(self.master)
+        self.menu_archivo = tk.Menu(self.menubar, tearoff=0)
+        self.menu_ayuda = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="Archivo", menu=self.menu_archivo)
+        self.menubar.add_cascade(label="Ayuda", menu=self.menu_ayuda)
+        self.master.config(menu=self.menubar)
 
         self.master.grid_rowconfigure(0, weight=1)
         self.master.grid_rowconfigure(1, weight=0)
@@ -90,6 +99,13 @@ class MainView:
     def configurar_callback_salir(self, callback):
         self.boton_salir.configure(command=callback)
 
+    def configurar_menu_archivo(self, on_cargar, on_guardar, on_salir):
+        self.menu_archivo.delete(0, "end")
+        self.menu_archivo.add_command(label="Cargar", command=on_cargar)
+        self.menu_archivo.add_command(label="Guardar", command=on_guardar)
+        self.menu_archivo.add_separator()
+        self.menu_archivo.add_command(label="Salir", command=on_salir)
+
     def actualizar_lista_usuarios(self, usuarios, callback):
         for widget in self.frame_lista.winfo_children():
             widget.destroy()
@@ -108,10 +124,6 @@ class MainView:
             self._avatar_image = None
             self.avatar_label.configure(image=None, text="")
 
-
-import customtkinter as ctk
-
-import customtkinter as ctk
 
 class AddUserView:
     def __init__(self, master):
@@ -163,17 +175,17 @@ class AddUserView:
         self.label_avatar.grid(row=row, column=0, pady=(15, 0), padx=25, sticky="w")
         row += 1
 
-        self.var_avatar = ctk.StringVar(value="avatar1.png")
+        self.var_avatar = ctk.StringVar(value="mujer1.png")
 
-        self.radio_avatar1 = ctk.CTkRadioButton(self.window, text="Avatar 1", variable=self.var_avatar, value="avatar1.png")
+        self.radio_avatar1 = ctk.CTkRadioButton(self.window, text="Mujer 1", variable=self.var_avatar, value="mujer1.png")
         self.radio_avatar1.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
 
-        self.radio_avatar2 = ctk.CTkRadioButton(self.window, text="Avatar 2", variable=self.var_avatar, value="avatar2.png")
+        self.radio_avatar2 = ctk.CTkRadioButton(self.window, text="Hombre", variable=self.var_avatar, value="hombre.png")
         self.radio_avatar2.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
 
-        self.radio_avatar3 = ctk.CTkRadioButton(self.window, text="Avatar 3", variable=self.var_avatar, value="avatar3.png")
+        self.radio_avatar3 = ctk.CTkRadioButton(self.window, text="Mujer 2", variable=self.var_avatar, value="mujer2.png")
         self.radio_avatar3.grid(row=row, column=0, padx=35, sticky="w")
         row += 1
 
@@ -186,24 +198,6 @@ class AddUserView:
 
         self.boton_cancelar = ctk.CTkButton(self.window, text="Cancelar", width=160)
         self.boton_cancelar.grid(row=row, column=0, pady=(0, 15), padx=80, sticky="ew")
-
-    def get_data(self):
-        return {
-            "nombre": self.entry_nombre.get().strip(),
-            "edad": self.entry_edad.get().strip(),
-            "genero": self.var_genero.get().strip(),
-            "avatar": self.var_avatar.get().strip()
-        }
-
-
-    def get_data(self):
-        return {
-            "nombre": self.entry_nombre.get().strip(),
-            "edad": self.entry_edad.get().strip(),
-            "genero": self.var_genero.get().strip(),
-            "avatar": self.var_avatar.get().strip()
-        }
-
 
     def get_data(self):
         return {

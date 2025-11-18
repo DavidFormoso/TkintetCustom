@@ -1,3 +1,5 @@
+import csv
+
 class Usuario:
     def __init__(self, nombre, edad, genero, avatar):
         self.nombre = nombre
@@ -23,3 +25,31 @@ class GestorUsuarios:
 
     def añadir(self, usuario):
         self._usuarios.append(usuario)
+
+    def guardar_csv(self, ruta):
+        with open(ruta, "w", newline="", encoding="utf-8") as f:
+            escritor = csv.writer(f)
+            escritor.writerow(["nombre", "edad", "genero", "avatar"])
+            for u in self._usuarios:
+                escritor.writerow([u.nombre, u.edad, u.genero, u.avatar])
+
+    def cargar_csv(self, ruta):
+        try:
+            with open(ruta, "r", newline="", encoding="utf-8") as f:
+                lector = csv.reader(f)
+                next(lector, None)
+                self._usuarios.clear()
+                for fila in lector:
+                    if not fila:
+                        continue
+                    try:
+                        nombre, edad_txt, genero, avatar = fila
+                        edad = int(edad_txt)
+                    except ValueError:
+                        continue
+                    self._usuarios.append(Usuario(nombre, edad, genero, avatar))
+            return True
+        except FileNotFoundError:
+            self._usuarios.clear()
+            self._cargar_datos_de_ejemplo()
+            return False

@@ -13,11 +13,18 @@ class AppController:
 
         self.BASE_DIR = Path(__file__).resolve().parent.parent
         self.ASSETS_PATH = self.BASE_DIR / "assets"
+        self.CSV_PATH = self.BASE_DIR / "usuarios.csv"
         self.avatar_images = {}
 
         self.view.configurar_callback_nuevo_usuario(self.abrir_ventana_anadir)
         self.view.configurar_callback_salir(self.master.destroy)
+        self.view.configurar_menu_archivo(
+            on_cargar=lambda: self.cargar_usuarios(mostrar_mensajes=True),
+            on_guardar=self.guardar_usuarios,
+            on_salir=self.master.destroy
+        )
 
+        # Aquí NO llamamos a cargar_usuarios: al iniciar queremos los 3 por defecto
         self.refrescar_lista_usuarios()
         if self.modelo.listar():
             self.seleccionar_usuario(0)
@@ -48,6 +55,7 @@ class AppController:
     def abrir_ventana_anadir(self):
         add_view = AddUserView(self.master)
         add_view.boton_guardar.configure(command=lambda: self.anadir_usuario(add_view))
+        add_view.boton_cancelar.configure(command=add_view.window.destroy)
 
     def anadir_usuario(self, add_view):
         datos = add_view.get_data()
@@ -69,3 +77,22 @@ class AppController:
         self.modelo.añadir(usuario)
         add_view.window.destroy()
         self.refrescar_lista_usuarios()
+
+    def guardar_usuarios(self):
+        try:
+            self.modelo.guardar_csv(self.CSV_PATH)
+            messagebox.showinfo("Guardar", "Usuarios guardados correctamente.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudieron guardar los usuarios.\n{e}")
+
+    def cargar_usuarios(self, mostrar_mensajes=True):
+        exito = self.modelo.cargar_csv(self.CSV_PATH)
+        self.refrescar_lista_usuarios()
+        if self.modelo.listar():
+            self.seleccionar_usuario(0)
+        if not mostrar_mensajes:
+            return
+        if exito:
+            messagebox.showinfo("Cargar", "Usuarios cargados correctamente.")
+        else:
+            messagebox.showwarning("Cargar", "No se encontró usuarios.csv. Se han cargado datos de ejemplo.")
